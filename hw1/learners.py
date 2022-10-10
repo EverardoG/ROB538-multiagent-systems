@@ -4,7 +4,7 @@ from copy import deepcopy
 import numpy as np
 
 from base_utils import Action
-from hw1.grid_world import GridWorld
+from grid_world import GridWorld
 
 class QLearner():
     def __init__(self, grid_world: GridWorld, alpha, gamma, epsilon):
