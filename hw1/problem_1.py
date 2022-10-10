@@ -20,5 +20,6 @@ world = GridWorld(agents_start_pos, targets_pos)
 # print(world.get_cli_state())
 
 fig, ax = plt.subplots()
+print(world.get_cli_state())
 world.plot_state(ax, show=True)
 plt.show()

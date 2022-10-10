@@ -3,6 +3,7 @@ from typing import Optional, List, Tuple
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
+from matplotlib.colors import LinearSegmentedColormap
 from base_utils import Action
 
 class GridWorld():
@@ -107,23 +108,27 @@ class GridWorld():
         return world_state
 
     def plot_state(self, ax, show: bool = True):
-        cmap_display = cm.get_cmap("RdYlGn")
-        display_map = np.zeros((self.bounds[0]+1, self.bounds[1]+1, 3))
-        # display_map[self.agents_pos[:,0], self.agents_pos[:,1]] = cmap_display(0.5)[:3]
-        # display_map[self.targets_pos[:,0], self.targets_pos[:,1]] = cmap_display(1)[:3]
+        colors = [(255,255,255), (200,0,0), (0,0,200)]
 
         cli_state = self.get_cli_state()
-        display_map = np.zeros((cli_state.shape[0], cli_state.shape[1], 3))
+        display_map = np.zeros((cli_state.shape[0], cli_state.shape[1], 3), dtype=int)
+        display_map[:,:] = colors[0]
         for row in range(display_map.shape[0]):
             for col in range(display_map.shape[1]):
                 # Use 1 where there is a target
                 if "t" in cli_state[row, col]:
-                    display_map[row, col] = cmap_display(0.5)[:3]
+                    display_map[display_map.shape[0]-row-1, col] = colors[1]
                 # Use 2 where there is an agent
-                elif "a" in cli_state[row, col]:
-                    display_map[row, col] = cmap_display(1)[:3]
+                elif "a" in cli_state[display_map.shape[0]-row-1, col]:
+                    display_map[row, col] = colors[2]
 
         ax.imshow(display_map)
-
+        x_range = [-0.5, self.bounds[0]+0.5]
+        y_range = [-0.5, self.bounds[1]+0.5]
+        ax.set_xticks(np.arange(self.bounds[0]+2)-0.5)
+        ax.set_yticks(np.arange(self.bounds[1]+2)-0.5)
+        ax.set_xlim(x_range)
+        ax.set_ylim(y_range)
+        ax.grid(color=(0.3,0.3,0.3),linewidth=2)
 
 
