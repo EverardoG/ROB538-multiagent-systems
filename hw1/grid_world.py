@@ -118,9 +118,11 @@ class GridWorld():
                 # Use 1 where there is a target
                 if "t" in cli_state[row, col]:
                     display_map[display_map.shape[0]-row-1, col] = colors[1]
+                    ax.text(col, display_map.shape[0]-row-1, cli_state[row, col], ha="center", va="center", size="x-large")
                 # Use 2 where there is an agent
                 elif "a" in cli_state[display_map.shape[0]-row-1, col]:
                     display_map[row, col] = colors[2]
+                    ax.text(col, display_map.shape[0]-row-1, cli_state[row, col], ha="center", va="center", size="x-large")
 
         ax.imshow(display_map)
         x_range = [-0.5, self.bounds[0]+0.5]
@@ -130,5 +132,3 @@ class GridWorld():
         ax.set_xlim(x_range)
         ax.set_ylim(y_range)
         ax.grid(color=(0.3,0.3,0.3),linewidth=2)
-
-
