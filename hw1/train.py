@@ -31,7 +31,7 @@ def run_episode(learners: List[QLearner], grid_world: GridWorld, num_steps: int,
             if update_q_tables:
                 # print(reward)
                 learner.update_q_table(last_states[agent_id], action, reward, adj_states)
-    print(np.sum(agent_rewards))
+    # print(np.sum(agent_rewards))
     return np.array(agent_rewards)
 
 def train_learners(world: GridWorld, learners: List[QLearner], num_steps: int, num_episodes: int)->Tuple[List[np.ndarray], List[np.ndarray], np.ndarray]:
