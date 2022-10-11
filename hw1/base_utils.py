@@ -1,7 +1,7 @@
-from enum import IntEnum
+from enum import Enum
 
-class Action(IntEnum):
-    LEFT = 1
-    RIGHT = 2
-    DOWN = 3
-    UP = 4
+class Action(Enum):
+    LEFT = 0
+    RIGHT = 1
+    DOWN = 2
+    UP = 3

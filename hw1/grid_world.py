@@ -2,14 +2,13 @@ import enum
 from typing import Optional, List, Tuple
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import cm
-from matplotlib.colors import LinearSegmentedColormap
 from base_utils import Action
 
 class GridWorld():
     def __init__(self, agents_start_pos: Optional[np.ndarray] = None, targets_pos = Optional[np.ndarray], random_restart: bool = False) -> None:
         # self.goal_pos = np.array([9,1])
         self.targets_pos = targets_pos
+        self.captured = [False for _ in range(len(targets_pos))]
         self.bounds = np.array([9, 4])
         if agents_start_pos is not None:
             self.start_pos = agents_start_pos
@@ -35,8 +34,9 @@ class GridWorld():
         ]
 
     def reset(self)->None:
+        self.captured = [False for _ in range(len(self.targets_pos))]
         if self.random_restart:
-            self.agents_pos = self.generate_random_starting_pos()
+            self.agents_pos = np.array([self.generate_random_starting_pos() for _ in range(len(self.agents_pos))])
         else:
             self.agents_pos = np.copy(self.start_pos)
 
@@ -57,11 +57,12 @@ class GridWorld():
     def get_state(self)->np.ndarray:
         return self.agents_pos
 
-    def get_reward(self)->int:
-        if any([np.allclose(self.agents_pos, target_pos) for target_pos in self.targets_pos]):
-            return 20
-        else:
-            return -1
+    def get_reward(self, agent_id: int)->int:
+        for target_id, target_pos in enumerate(self.targets_pos):
+            if np.allclose(self.agents_pos[agent_id], target_pos) and not self.captured[target_id]:
+                self.captured[target_id] = True
+                return 20
+        return -1
 
     def get_valid_adj_coords(self, coord: np.ndarray)->List[np.ndarray]:
         # Get all adjacent coordinates
@@ -107,7 +108,7 @@ class GridWorld():
             world_state[self.bounds[1]-agent_pos[1], agent_pos[0]] = 'a'+str(ind+1)
         return world_state
 
-    def plot_state(self, ax, show: bool = True):
+    def plot_state(self, ax, show: bool = False):
         colors = [(255,255,255), (200,0,0), (0,0,200)]
 
         cli_state = self.get_cli_state()
@@ -132,3 +133,5 @@ class GridWorld():
         ax.set_xlim(x_range)
         ax.set_ylim(y_range)
         ax.grid(color=(0.3,0.3,0.3),linewidth=2)
+
+        if show: plt.show()

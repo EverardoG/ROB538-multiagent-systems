@@ -2,6 +2,8 @@ from typing import List
 from copy import deepcopy
 
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import cm
 
 from base_utils import Action
 from grid_world import GridWorld
@@ -49,3 +51,40 @@ class QLearner():
                     possible_actions.remove(action)
                     break
             return np.random.choice(possible_actions)
+
+    def plot_q_table(self,ax,show=False,worst=False):
+        if worst:
+            v_table = np.min(self.q_table, axis=2)
+        else:
+            v_table = np.max(self.q_table, axis=2)
+        table_display = np.flip(v_table.T, axis=0)
+
+        # Make values from 0 to 1
+        v_table_01 = (table_display - np.min(table_display))/np.max(table_display)*0.4
+
+        # Construct display map using value table
+        cmap_name = 'RdYlGn'
+        cmap_display = cm.get_cmap(cmap_name)
+        display_map = np.zeros((table_display.shape[0], table_display.shape[1], 3))
+        for row in range(display_map.shape[0]):
+            for col in range(display_map.shape[1]):
+                # Use black where there is a barrier
+                if table_display[row, col] == 0:
+                    display_map[row, col] = [0,0,0]
+                else:
+                    display_map[row, col] = cmap_display(v_table_01[row, col])[:3]
+
+        # Annotate each square with text
+        for row in range(display_map.shape[0]):
+            for col in range(display_map.shape[1]):
+                text_display = "%.1f" % table_display[row, col]
+                ax.text(col, row, text_display, ha="center", va="center", color="w", size="x-large") #fontsize=15)#
+
+        # Remove ticks
+        ax.set_xticks([])
+        ax.set_yticks([])
+
+        # Put the display on the plot
+        ax.imshow(display_map)
+
+        if show: plt.show()
