@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from base_utils import Action
 
 class GridWorld():
-    def __init__(self, agents_start_pos: Optional[np.ndarray] = None, targets_pos = Optional[np.ndarray], random_restart: bool = False) -> None:
+    def __init__(self, agents_start_pos: Optional[np.ndarray] = None, targets_pos = Optional[np.ndarray], random_restart: bool = False, team_reward: bool = False) -> None:
         # self.goal_pos = np.array([9,1])
         self.targets_pos = targets_pos
         self.captured = [False for _ in range(len(targets_pos))]
@@ -32,6 +32,7 @@ class GridWorld():
             np.array([1,0]),
             np.array([-1,0])
         ]
+        self.team_reward = team_reward
 
     def reset(self)->None:
         self.captured = [False for _ in range(len(self.targets_pos))]
@@ -58,11 +59,21 @@ class GridWorld():
         return self.agents_pos
 
     def get_reward(self, agent_id: int)->int:
-        for target_id, target_pos in enumerate(self.targets_pos):
-            if np.allclose(self.agents_pos[agent_id], target_pos) and not self.captured[target_id]:
-                self.captured[target_id] = True
-                return 20
-        return -1
+        # If the reward is a team reward, then look at the state of both agents to determine team reward at this step.
+        if self.team_reward:
+            for agent_id in range(len(self.start_pos)):
+                for target_id, target_pos in enumerate(self.targets_pos):
+                    if np.allclose(self.agents_pos[agent_id], target_pos) and not self.captured[target_id]:
+                        self.captured[target_id] = True
+                        return 20
+            return -1
+        # Individual rewards otherwise
+        else:
+            for target_id, target_pos in enumerate(self.targets_pos):
+                if np.allclose(self.agents_pos[agent_id], target_pos) and not self.captured[target_id]:
+                    self.captured[target_id] = True
+                    return 20
+            return -1
 
     def get_valid_adj_coords(self, coord: np.ndarray)->List[np.ndarray]:
         # Get all adjacent coordinates

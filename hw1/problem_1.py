@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from grid_world import GridWorld
-from train import run_episode, train_learners
+from train import train_learners
 from learners import QLearner
 
 agents_start_pos = np.array([

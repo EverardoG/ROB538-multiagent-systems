@@ -84,6 +84,11 @@ class QLearner():
         ax.set_xticks([])
         ax.set_yticks([])
 
+        if worst:
+            ax.set_title("Min Q Value")
+        else:
+            ax.set_title("Max Q Value")
+
         # Put the display on the plot
         ax.imshow(display_map)
 
