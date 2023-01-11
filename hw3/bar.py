@@ -71,7 +71,7 @@ def saveRewardsPlot(global_rewards_train: List[float], global_rewards_test: List
 
     if filename is None:
         filename = "rewards_plot"
-    # plt.savefig(filename+'.svg', format='svg', dpi=1200)
+    plt.savefig("hw3/figures/"+filename+'.svg', format='svg', dpi=1200)
     plt.savefig("hw3/figures/"+filename+'.png', format='png', dpi=1200)
 
 # def saveDistributionPlot(nightly_distributions_train: List[np.ndarray], nightly_distributions_test: List[np.ndarray]):
@@ -116,7 +116,7 @@ def saveHistogram(state, filename):
 
     if filename is None:
         filename = "histogram_plot"
-    # plt.savefig(filename+".svg", format)
+    plt.savefig("hw3/figures/"+filename+".svg", format="svg", dpi=1200)
     plt.savefig("hw3/figures/"+filename+".png", format="png", dpi=1200)
 
 def runBarProblem(num_agents, K_nights, num_episodes, epsilon_off, epsilon, alpha, b, reward_type, filename):
